@@ -1,5 +1,11 @@
 const pg = Npm.require('pg');
 
+// >>>>> Shyftplan monkey-patch.
+// node-postgres assumes timestamps should be in local timezone, whereas they are in UTC
+var types = pg.types;
+types.setTypeParser(1114, function(stringValue) { return moment.utc(stringValue).toDate(); });
+// <<<<< End of monkey-patch
+
 const connectionUrl = process.env.POSTGRES_URL || 'postgres://127.0.0.1/postgres';
 
 function runInFence(f) {

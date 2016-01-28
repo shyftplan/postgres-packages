@@ -1,6 +1,13 @@
 const {EventEmitter} = Npm.require('events');
 const Future = Npm.require('fibers/future');
 const pg = Npm.require('pg');
+
+// >>>>> Shyftplan monkey-patch.
+// node-postgres assumes timestamps should be in local timezone, whereas they are in UTC
+var types = pg.types;
+types.setTypeParser(1114, function(stringValue) { return moment.utc(stringValue).toDate(); });
+// <<<<< End of monkey-patch
+
 const {murmur3} = Npm.require('murmurhash-js');
 
 PgLiveQuery = class PgLiveQuery extends EventEmitter {
