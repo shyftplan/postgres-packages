@@ -210,6 +210,12 @@ PgLiveQuery = class PgLiveQuery extends EventEmitter {
     this.removeListener('update', handle._cb);
     this.removeListener('error', handle._errCb);
     const queryBuffer = this.queries[handle._queryHash];
+
+    // >>>>> Shyftplan monkey-patch.
+    // sometimes the queryBuffer is null
+    if (!queryBuffer) return
+    // <<<<< End of monkey-patch
+
     const pos = queryBuffer.handles.indexOf(handle);
     if (pos > -1) {
       queryBuffer.handles.splice(pos, 1);
@@ -330,6 +336,12 @@ PgLiveQuery = class PgLiveQuery extends EventEmitter {
 
   _updateQuery(queryHash) {
     const queryBuffer = this.queries[queryHash];
+
+    // >>>>> Shyftplan monkey-patch.
+    // sometimes the queryBuffer is null
+    if (!queryBuffer) return
+    // <<<<< End of monkey-patch
+
     const oldHashes = _.values(queryBuffer.data).map(row => row._hash);
 
     const client = this.client;
