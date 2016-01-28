@@ -67,6 +67,11 @@ PgLiveQuery = class PgLiveQuery extends EventEmitter {
         _errCb: errCb
       };
 
+      // >>>>> Shyftplan monkey-patch.
+      // max concurrent event listeners defaults to 10 - allow infinite
+      this.setMaxListeners(0);
+      // <<<<< End of monkey-patch
+
       this.on('update', cb);
       this.on('error', errCb);
       this._setupSelect(query, params, pollValidators, handle);
